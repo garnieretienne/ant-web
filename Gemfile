@@ -44,3 +44,7 @@ group :development do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
 end
+
+# Use the mail gem to manage incoming and outcoming messages related to our
+# mailing lists.
+gem 'mail'
