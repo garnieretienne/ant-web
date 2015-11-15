@@ -1,9 +1,9 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-foo:
-  name: foo
-  title: Foo Bar
+one:
+  user: lucky_luke
+  mailing_list: foo
 
-hello:
-  name: hello
-  title: Hello World
+two:
+  user: john_smith
+  mailing_list: foo

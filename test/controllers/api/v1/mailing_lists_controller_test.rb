@@ -2,9 +2,11 @@ require 'test_helper'
 
 class Api::V1::MailingListsControllerTest < ActionController::TestCase
   test "should post receive_message" do
+    user = User.first
+    list = user.mailing_lists.first
     mail = Mail.new do
-      to "foo@list.local"
-      from "admin@list.local"
+      to "#{list.name}@localhost"
+      from user.email_address
       subject "testing"
     end
     assert_difference("Mail::TestMailer.deliveries.length", 1) do

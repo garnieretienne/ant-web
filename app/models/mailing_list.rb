@@ -1,4 +1,6 @@
 class MailingList < ActiveRecord::Base
+  has_many :subscriptions
+  has_many :subscribers, through: :subscriptions, source: :user
 
   # TODO: move the format validator in its own validator class.
   validates :name, presence: true, uniqueness: true,
@@ -9,11 +11,8 @@ class MailingList < ActiveRecord::Base
     title
   end
 
-  def subscribers
-    ["Etienne Garnier <vagrant@vagrant-ubuntu-trusty-64>"] # FIXME
-  end
-
+  # TODO: define different policies (owners only or every subscribers)
   def authorized_to_post?(email_address)
-    true # FIXME
+    subscribers.find_by(email_address: email_address)
   end
 end
