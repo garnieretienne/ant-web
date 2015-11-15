@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151101161931) do
+ActiveRecord::Schema.define(version: 20151106154407) do
 
   create_table "mailing_lists", force: :cascade do |t|
     t.string   "name"
@@ -21,5 +21,15 @@ ActiveRecord::Schema.define(version: 20151101161931) do
   end
 
   add_index "mailing_lists", ["name"], name: "index_mailing_lists_on_name", unique: true
+
+  create_table "messages", force: :cascade do |t|
+    t.string   "author"
+    t.text     "source"
+    t.integer  "mailing_list_id"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+  end
+
+  add_index "messages", ["mailing_list_id"], name: "index_messages_on_mailing_list_id"
 
 end

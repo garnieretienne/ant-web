@@ -9,11 +9,11 @@ class MailingList < ActiveRecord::Base
     title
   end
 
-  def is_allowed_to_post?(from)
-    true
-  end
-
   def subscribers
     ["Etienne Garnier <vagrant@vagrant-ubuntu-trusty-64>"] # FIXME
+  end
+
+  def authorized_to_post?(email_address)
+    true # FIXME
   end
 end

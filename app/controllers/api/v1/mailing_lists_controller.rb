@@ -2,37 +2,27 @@ class Api::V1::MailingListsController < ApplicationController
   protect_from_forgery(with: :null_session)
 
   def receive_message
-    logger.info("Receiving incoming message from MTA...")
+    message, mailing_list = parse_incoming_message
 
-    parse_message
-    parse_mailing_list_name
+    return render(json: true, status: :bad_request) unless message.valid?
+    return render(json: true, status: :unauthorized) unless message.authorized?
 
-    list = MailingList.find_by(name: @list_name)
+    message.save
 
-    unless list || list.is_allowed_to_post?(@message.from)
-      return render(json: true, status: :unauthorized)
-    end
+    forward_list_message_service = ForwardListMessageService.new(
+      message: message.source,
+      subscribers: mailing_list.subscribers
+    )
 
-    @message.reply_to, @message.to = @message.to, list.subscribers
-
-    unless @message.deliver
-      logger.warn("Received message not delivered.")
-      return render(json: true, status: :internal_server_error)
-    end
-
-    logger.info("Received message delivered.")
+    forward_list_message_service.call
     render(json: true)
   end
 
   private
 
-  def parse_message
+  def parse_incoming_message
     message_string = URI.decode(request.raw_post)
-    @message = Mail.read_from_string(message_string)
-  end
-
-  def parse_mailing_list_name
-    to = @message.to_addrs && @message.to_addrs.first
-    @list_name = to && to.split('@').first
+    message = Message.new_from_source(message_string)
+    [message, message.mailing_list]
   end
 end
