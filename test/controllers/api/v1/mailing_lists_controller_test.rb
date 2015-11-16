@@ -23,7 +23,13 @@ class Api::V1::MailingListsControllerTest < ActionController::TestCase
       "The mail Subject header field has changed"
     assert_equal list.subscribers.map { |s| s.email_with_name } ,
       sent_mail.smtp_envelope_to,
-      "The mail RCPT TO envelope field has not been updated with the list " +
+      "The mail TO envelope field has not been updated with the list " +
       "subscribers list"
+    assert_equal list.owner.email_with_name, sent_mail.smtp_envelope_from,
+      "The mail FROM envelope field has not been updated with the list " +
+      "owner address"
+    assert_equal list.owner.email_address, sent_mail.sender,
+      "The mail Sender header field has not been updated with the list " +
+      "owner address"
   end
 end

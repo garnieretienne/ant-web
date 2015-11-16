@@ -1,9 +1,11 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 foo:
+  owner: lucky_luke
   name: foo
   title: Foo Bar
 
 hello:
+  owner: lucky_luke
   name: hello
   title: Hello World
