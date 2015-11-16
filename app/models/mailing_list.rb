@@ -1,8 +1,10 @@
 class MailingList < ActiveRecord::Base
+  belongs_to :owner, class_name: User
   has_many :subscriptions
   has_many :subscribers, through: :subscriptions, source: :user
 
   # TODO: move the format validator in its own validator class.
+  validates :owner, presence: true
   validates :name, presence: true, uniqueness: true,
     format: { with: /\A[a-zA-Z._-]+\z/}
   validates :title, presence: true

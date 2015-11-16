@@ -2,8 +2,8 @@ require 'test_helper'
 
 class Api::V1::MailingListsControllerTest < ActionController::TestCase
   test "should post receive_message" do
-    user = User.first
-    list = user.mailing_lists.first
+    list = MailingList.first
+    user = list.subscribers.first
     mail = Mail.new do
       to "#{list.name}@localhost"
       from user.email_address

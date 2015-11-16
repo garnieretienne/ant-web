@@ -19,7 +19,5 @@ class SubscriptionTest < ActiveSupport::TestCase
     assert subscription.save, "Not subscribed an user to a list"
     assert list.subscribers.include?(user),
       "User is not in the list subscribers"
-    assert user.mailing_lists.include?(list),
-      "Subscribed list is not present in the user subscriptions"
   end
 end

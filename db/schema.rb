@@ -11,16 +11,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151115142510) do
+ActiveRecord::Schema.define(version: 20151116201325) do
 
   create_table "mailing_lists", force: :cascade do |t|
     t.string   "name"
     t.string   "title"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer  "owner_id"
   end
 
   add_index "mailing_lists", ["name"], name: "index_mailing_lists_on_name", unique: true
+  add_index "mailing_lists", ["owner_id"], name: "index_mailing_lists_on_owner_id"
 
   create_table "messages", force: :cascade do |t|
     t.string   "author"
