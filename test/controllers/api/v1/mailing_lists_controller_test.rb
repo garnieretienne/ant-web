@@ -31,5 +31,7 @@ class Api::V1::MailingListsControllerTest < ActionController::TestCase
     assert_equal list.owner.email_address, sent_mail.sender,
       "The mail Sender header field has not been updated with the list " +
       "owner address"
+    assert_equal list.list_id, sent_mail["List-Id"].value,
+      "The mail List-Id field is not set with the correct list id"
   end
 end

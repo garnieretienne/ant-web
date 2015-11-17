@@ -5,16 +5,32 @@ class MailingList < ActiveRecord::Base
 
   # TODO: move the format validator in its own validator class.
   validates :owner, presence: true
-  validates :name, presence: true, uniqueness: true,
-    format: { with: /\A[a-zA-Z._-]+\z/}
+  validates :uid, presence: true, list_id: true, uniqueness: true
+  validates :name, presence: true, list_name: true, uniqueness: true
   validates :title, presence: true
+
+  before_validation :generate_uid
 
   def to_s
     title
   end
 
+  def list_id
+    "#{title} <#{uid}>"
+  end
+
   # TODO: define different policies (owners only or every subscribers)
   def authorized_to_post?(email_address)
     subscribers.find_by(email_address: email_address)
+  end
+
+  private
+
+  def generate_uid
+    unless uid
+      random = SecureRandom.hex(16)
+      date = Time.now.strftime("%m%Y")
+      self[:uid] = "#{name}.#{random}.#{date}.localhost"
+    end
   end
 end

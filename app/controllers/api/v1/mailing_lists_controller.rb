@@ -10,6 +10,7 @@ class Api::V1::MailingListsController < ApplicationController
     message.save
 
     forward_list_message_service = ForwardListMessageService.new(
+      list_id: mailing_list.list_id,
       owner: mailing_list.owner.email_with_name,
       message: message.source,
       subscribers: mailing_list.subscribers.map { |s| s.email_with_name }

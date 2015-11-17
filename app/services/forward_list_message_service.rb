@@ -3,6 +3,9 @@ class ForwardListMessageService
   class ForwardListMessageServiceError < StandardError; end
 
   def initialize(options)
+    @list_id = options.fetch(:list_id) do
+      fail ForwardListMessageServiceError, "Missing list id"
+    end
     @owner = options.fetch(:owner) do
       fail ForwardListMessageServiceError, "Missing list owner address"
     end
@@ -17,9 +20,10 @@ class ForwardListMessageService
   def call
     @new_message = Mail.read_from_string(@message)
 
-    set_the_header_sender_field
     set_the_envelope_return_address
     set_the_envelope_destination_addresses
+    set_the_header_sender_field
+    set_the_header_list_id_field
 
     @new_message.deliver
   end
@@ -60,5 +64,14 @@ class ForwardListMessageService
   # address in the envelope with all of the expanded[...]
   def set_the_envelope_destination_addresses
     @new_message.smtp_envelope_to = @subscribers
+  end
+
+  # RFC2919 section 3
+  #
+  # [...]This header SHOULD be included on all messages distributed by the list
+  # (including command responses to individual users), and on other messages
+  # where the message clearly applies to this particular distinct list.[...]
+  def set_the_header_list_id_field
+    @new_message.header["List-Id"] = @list_id
   end
 end
