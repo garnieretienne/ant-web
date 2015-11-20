@@ -35,21 +35,21 @@ ActiveRecord::Schema.define(version: 20151117145410) do
 
   add_index "messages", ["mailing_list_id"], name: "index_messages_on_mailing_list_id"
 
+  create_table "subscribers", force: :cascade do |t|
+    t.string   "name"
+    t.string   "email_address"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+  end
+
   create_table "subscriptions", force: :cascade do |t|
-    t.integer  "user_id"
+    t.integer  "subscriber_id"
     t.integer  "mailing_list_id"
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
   end
 
   add_index "subscriptions", ["mailing_list_id"], name: "index_subscriptions_on_mailing_list_id"
-  add_index "subscriptions", ["user_id"], name: "index_subscriptions_on_user_id"
-
-  create_table "users", force: :cascade do |t|
-    t.string   "name"
-    t.string   "email_address"
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
-  end
+  add_index "subscriptions", ["subscriber_id"], name: "index_subscriptions_on_subscriber_id"
 
 end

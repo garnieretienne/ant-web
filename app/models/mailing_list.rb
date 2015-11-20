@@ -1,9 +1,8 @@
 class MailingList < ActiveRecord::Base
-  belongs_to :owner, class_name: User
+  belongs_to :owner, class_name: Subscriber
   has_many :subscriptions
-  has_many :subscribers, through: :subscriptions, source: :user
+  has_many :subscribers, through: :subscriptions
 
-  # TODO: move the format validator in its own validator class.
   validates :owner, presence: true
   validates :uid, presence: true, list_id: true, uniqueness: true
   validates :name, presence: true, list_name: true, uniqueness: true
@@ -24,12 +23,12 @@ class MailingList < ActiveRecord::Base
     subscribers.find_by(email_address: email_address)
   end
 
-  def subscribe(user_name, user_email)
-    user = User.find_or_initialize_by(email_address: user_email) do |user|
-      user.name = user_name
+  def subscribe(name, email)
+    subscriber = Subscriber.find_or_initialize_by(email_address: email) do |s|
+      s.name = name
     end
 
-    subscriptions.new(user: user)
+    subscriptions.new(subscriber: subscriber)
   end
 
   private

@@ -44,7 +44,7 @@ class MailingListTest < ActiveSupport::TestCase
 
   test "should subscribe a new email address to the mailing list" do
     list = MailingList.first
-    assert_difference "User.count", 1 do
+    assert_difference "Subscriber.count", 1 do
       assert_difference "Subscription.count", 1 do
         subscription = list.subscribe("John Doe", "johnny@doe.tld")
         assert subscription.save, "Subscription not saved"

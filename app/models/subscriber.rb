@@ -1,4 +1,4 @@
-class User < ActiveRecord::Base
+class Subscriber < ActiveRecord::Base
   has_many :subscriptions
   has_many :mailing_lists, foreign_key: "owner_id"
 
