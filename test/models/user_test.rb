@@ -23,4 +23,10 @@ class UserTest < ActiveSupport::TestCase
     user = User.find_by(email_address: "john.smith@domain.tld")
     assert_equal "John Smith <john.smith@domain.tld>", user.email_with_name
   end
+
+  test "should only save new user with unique email address" do
+    user = User.first
+    new_user = User.new(name: "Mr John", email_address: user.email_address)
+    assert_not new_user.save, "New user saved with a duplicate email address"
+  end
 end

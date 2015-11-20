@@ -4,7 +4,7 @@ class ForwardListMessageService
 
   def initialize(options)
     @list_id = options.fetch(:list_id) do
-      fail ForwardListMessageServiceError, "Missing list id"
+      fail ForwardListMessageServiceError, "Missing list id header"
     end
     @owner = options.fetch(:owner) do
       fail ForwardListMessageServiceError, "Missing list owner address"

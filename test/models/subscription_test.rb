@@ -20,4 +20,15 @@ class SubscriptionTest < ActiveSupport::TestCase
     assert list.subscribers.include?(user),
       "User is not in the list subscribers"
   end
+
+  test "should not subscribe the same user twice to a mailing list" do
+    list = MailingList.first
+    user = list.subscribers.first
+    subscription = Subscription.new(user: user, mailing_list: list)
+    assert_not subscription.save,
+      "Subscription saved with an existing subscriber"
+    assert subscription.errors.messages[:user]
+      .include?("is already a subscriber"),
+        "No error message for already subscribed user"
+  end
 end

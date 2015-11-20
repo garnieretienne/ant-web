@@ -24,6 +24,14 @@ class MailingList < ActiveRecord::Base
     subscribers.find_by(email_address: email_address)
   end
 
+  def subscribe(user_name, user_email)
+    user = User.find_or_initialize_by(email_address: user_email) do |user|
+      user.name = user_name
+    end
+
+    subscriptions.new(user: user)
+  end
+
   private
 
   def generate_uid

@@ -41,4 +41,14 @@ class MailingListTest < ActiveSupport::TestCase
     assert_equal "localhost", localhost,
       "Generated UID does not end with 'localhost'"
   end
+
+  test "should subscribe a new email address to the mailing list" do
+    list = MailingList.first
+    assert_difference "User.count", 1 do
+      assert_difference "Subscription.count", 1 do
+        subscription = list.subscribe("John Doe", "johnny@doe.tld")
+        assert subscription.save, "Subscription not saved"
+      end
+    end
+  end
 end

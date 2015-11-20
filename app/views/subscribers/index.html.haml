@@ -1,0 +1,21 @@
+- flash.each do |name, msg|
+  = content_tag(:div, msg, class: name)
+
+%h1= "Mailing list: #{@mailing_list}"
+
+%h2= "Subscribers (#{@subscribers.length})"
+
+= form_for(@new_subscriber, url: mailing_list_subscribers_path(@mailing_list)) do |f|
+  %table
+    %tr
+      %th Name
+      %th Email Address
+      %th Actions
+    - @subscribers.each do |subscriber|
+      %tr
+        %td= subscriber.name
+        %td= subscriber.email_address
+    %tr
+      %td= f.text_field(:name)
+      %td= f.text_field(:email_address)
+      %td= f.submit("Add")

@@ -1,5 +1,9 @@
 Rails.application.routes.draw do
 
+  resources :mailing_lists, only: :index do
+    resources :subscribers, only: [:index, :create]
+  end
+
   namespace :api, defaults: {format: "json"} do
     namespace :v1 do
       post "mailing_lists/receive_message"

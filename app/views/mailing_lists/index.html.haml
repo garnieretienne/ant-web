@@ -1,0 +1,5 @@
+%h1 Mailing Lists
+
+%ul
+  - @mailing_lists.each do |mailing_list|
+    %li= link_to(mailing_list, mailing_list_subscribers_path(mailing_list))
