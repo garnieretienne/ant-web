@@ -9,7 +9,7 @@ class SubscribersController < ApplicationController
   def create
     mailing_list = MailingList.find(params[:mailing_list_id])
     subscription = mailing_list.subscribe(
-      subscriber_params[:name], subscriber_params[:email_address]
+      subscriber_params[:name], subscriber_params[:email]
     )
 
     if subscription.save
@@ -25,6 +25,6 @@ class SubscribersController < ApplicationController
   private
 
   def subscriber_params
-    params.require(:subscriber).permit(:name, :email_address)
+    params.require(:subscriber).permit(:name, :email)
   end
 end

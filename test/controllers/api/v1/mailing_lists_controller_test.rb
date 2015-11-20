@@ -6,7 +6,7 @@ class Api::V1::MailingListsControllerTest < ActionController::TestCase
     subscriber = list.subscribers.first
     mail = Mail.new do
       to "#{list.name}@localhost"
-      from subscriber.email_address
+      from subscriber.email
       subject "testing"
     end
     assert_difference("Mail::TestMailer.deliveries.length", 1) do
@@ -28,7 +28,7 @@ class Api::V1::MailingListsControllerTest < ActionController::TestCase
     assert_equal list.owner.email_with_name, sent_mail.smtp_envelope_from,
       "The mail FROM envelope field has not been updated with the list " +
       "owner address"
-    assert_equal list.owner.email_address, sent_mail.sender,
+    assert_equal list.owner.email, sent_mail.sender,
       "The mail Sender header field has not been updated with the list " +
       "owner address"
     assert_equal list.list_id, sent_mail["List-Id"].value,

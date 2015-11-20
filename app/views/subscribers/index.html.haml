@@ -9,13 +9,13 @@
   %table
     %tr
       %th Name
-      %th Email Address
+      %th Email
       %th Actions
     - @subscribers.each do |subscriber|
       %tr
         %td= subscriber.name
-        %td= subscriber.email_address
+        %td= subscriber.email
     %tr
       %td= f.text_field(:name)
-      %td= f.text_field(:email_address)
+      %td= f.text_field(:email)
       %td= f.submit("Add")

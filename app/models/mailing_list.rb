@@ -19,12 +19,12 @@ class MailingList < ActiveRecord::Base
   end
 
   # TODO: define different policies (owners only or every subscribers)
-  def authorized_to_post?(email_address)
-    subscribers.find_by(email_address: email_address)
+  def authorized_to_post?(email)
+    subscribers.find_by(email: email)
   end
 
   def subscribe(name, email)
-    subscriber = Subscriber.find_or_initialize_by(email_address: email) do |s|
+    subscriber = Subscriber.find_or_initialize_by(email: email) do |s|
       s.name = name
     end
 

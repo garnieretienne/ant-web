@@ -2,8 +2,8 @@
 
 lucky_luke:
   name: Lucky Luke
-  email_address: lucky.lucke@domain.tld
+  email: lucky.lucke@domain.tld
 
 john_smith:
   name: John Smith
-  email_address: john.smith@domain.tld
+  email: john.smith@domain.tld
