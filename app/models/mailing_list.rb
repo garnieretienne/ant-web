@@ -27,8 +27,18 @@ class MailingList < ActiveRecord::Base
     subscriber = Subscriber.find_or_initialize_by(email: email) do |s|
       s.name = name
     end
-
+    
     subscriptions.new(subscriber: subscriber)
+  end
+
+  def unsubscribe(email)
+    subscriber = Subscriber.find_by(email: email)
+    return false unless subscriber
+
+    subscription = subscriptions.find_by(subscriber: subscriber)
+    return false unless subscription
+
+    subscription.destroy
   end
 
   private

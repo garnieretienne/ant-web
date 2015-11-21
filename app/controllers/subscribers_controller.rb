@@ -3,7 +3,7 @@ class SubscribersController < ApplicationController
   def index
     @mailing_list = MailingList.find(params[:mailing_list_id])
     @subscribers = @mailing_list.subscribers
-    @new_subscriber = @subscribers.new
+    @new_subscriber = Subscriber.new
   end
 
   def create
@@ -17,6 +17,19 @@ class SubscribersController < ApplicationController
     else
       errors_text = subscription.errors.full_messages.join(", ")
       flash.alert = "Cannot add this subscriber: #{errors_text}"
+    end
+
+    redirect_to(mailing_list_subscribers_path(mailing_list))
+  end
+
+  def destroy
+    mailing_list = MailingList.find(params[:mailing_list_id])
+    subscriber = mailing_list.subscribers.find(params[:id])
+
+    if mailing_list.unsubscribe(subscriber.email)
+      flash.notice = "This email has been removed from this list subscribers"
+    else
+      flash.alert = "Cannot unsubscribe this email"
     end
 
     redirect_to(mailing_list_subscribers_path(mailing_list))

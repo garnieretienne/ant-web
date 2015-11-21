@@ -51,4 +51,13 @@ class MailingListTest < ActiveSupport::TestCase
       end
     end
   end
+
+  test "should unsubscribe an email from a mailing list" do
+    list = MailingList.first
+    subscriber = list.subscribers.first
+    assert_difference "Subscription.count", -1 do
+      assert list.unsubscribe(subscriber.email),
+        "The email has not been unsubscribed from the mailing list"
+    end
+  end
 end
