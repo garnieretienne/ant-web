@@ -1,10 +1,13 @@
 class Subscriber < ActiveRecord::Base
-  has_many :subscriptions
-  has_many :mailing_lists, foreign_key: "owner_id"
+  belongs_to :mailing_list
 
+  validates :mailing_list, presence: true
   validates :name, presence: true
-  validates :email, presence: true, email: true,
-    uniqueness: {case_sensitive: false}
+  validates :email, presence: true, email: true, uniqueness: {
+    case_sensitive: false,
+    scope: :mailing_list,
+    message: "is already subscribed"
+  }
 
   def to_s
     name

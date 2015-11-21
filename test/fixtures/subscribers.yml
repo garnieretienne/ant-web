@@ -3,7 +3,9 @@
 lucky_luke:
   name: Lucky Luke
   email: lucky.lucke@domain.tld
+  mailing_list: foo
 
 john_smith:
   name: John Smith
   email: john.smith@domain.tld
+  mailing_list: foo

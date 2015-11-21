@@ -1,9 +1,0 @@
-# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
-one:
-  subscriber: lucky_luke
-  mailing_list: foo
-
-two:
-  subscriber: john_smith
-  mailing_list: foo

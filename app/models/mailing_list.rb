@@ -1,9 +1,6 @@
 class MailingList < ActiveRecord::Base
-  belongs_to :owner, class_name: Subscriber
-  has_many :subscriptions
-  has_many :subscribers, through: :subscriptions
+  has_many :subscribers
 
-  validates :owner, presence: true
   validates :uid, presence: true, list_id: true, uniqueness: true
   validates :name, presence: true, list_name: true, uniqueness: true
   validates :title, presence: true
@@ -24,21 +21,14 @@ class MailingList < ActiveRecord::Base
   end
 
   def subscribe(name, email)
-    subscriber = Subscriber.find_or_initialize_by(email: email) do |s|
-      s.name = name
-    end
-    
-    subscriptions.new(subscriber: subscriber)
+    subscribers.new(name: name, email: email)
   end
 
   def unsubscribe(email)
-    subscriber = Subscriber.find_by(email: email)
+    subscriber = subscribers.find_by(email: email)
     return false unless subscriber
 
-    subscription = subscriptions.find_by(subscriber: subscriber)
-    return false unless subscription
-
-    subscription.destroy
+    subscriber.destroy
   end
 
   private

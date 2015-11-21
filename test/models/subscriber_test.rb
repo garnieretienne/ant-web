@@ -2,7 +2,7 @@ require 'test_helper'
 
 class SubscriberTest < ActiveSupport::TestCase
 
-  test "should not save a subscriber with no name nor email address" do
+  test "should not save a subscriber with no name, email nor mailing list" do
     subscriber = Subscriber.new
     assert_not subscriber.save,
       "Saved a subscriber with no name nor email address"
@@ -10,6 +10,8 @@ class SubscriberTest < ActiveSupport::TestCase
       "No error message for the blank name attribute"
     assert subscriber.errors.messages[:email].include?("can't be blank"),
       "No error message for the blank email address attribute"
+    assert subscriber.errors.messages[:mailing_list].include?("can't be blank"),
+      "No error message for the blank mailing list attribute"
   end
 
   test "should not save a subscriber with a badly formatted email address" do
@@ -29,10 +31,18 @@ class SubscriberTest < ActiveSupport::TestCase
       subscriber.email_with_name
   end
 
-  test "should only save new subscriber with unique email address" do
-    subscriber = Subscriber.first
-    new_subscriber = Subscriber.new(name: "Mr John", email: subscriber.email)
+  test "should only save new mailing subscriber email once" do
+    list = MailingList.first
+    subscriber = list.subscribers.first
+    new_subscriber = Subscriber.new(
+      name: "Mr John",
+      email: subscriber.email,
+      mailing_list: list
+    )
     assert_not new_subscriber.save,
       "New subscriber saved with a duplicate email address"
+    assert new_subscriber.errors.messages[:email]
+      .include?("is already subscribed"),
+        "No error message for already subscribed email address"
   end
 end
