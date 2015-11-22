@@ -11,15 +11,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151117145410) do
+ActiveRecord::Schema.define(version: 20151122122432) do
 
   create_table "mailing_lists", force: :cascade do |t|
     t.string   "name"
     t.string   "title"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer  "owner_id"
     t.string   "uid"
+    t.integer  "owner_id"
   end
 
   add_index "mailing_lists", ["name"], name: "index_mailing_lists_on_name", unique: true
@@ -44,5 +44,12 @@ ActiveRecord::Schema.define(version: 20151117145410) do
   end
 
   add_index "subscribers", ["mailing_list_id"], name: "index_subscribers_on_mailing_list_id"
+
+  create_table "users", force: :cascade do |t|
+    t.string   "name"
+    t.string   "email"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
 end

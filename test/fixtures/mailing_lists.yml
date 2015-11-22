@@ -3,7 +3,9 @@
 foo:
   name: foo
   title: Foo Bar
+  owner: etienne_garnier
 
 hello:
   name: hello
   title: Hello World
+  owner: etienne_garnier

@@ -5,9 +5,8 @@ class MailingListTest < ActiveSupport::TestCase
   test "should not save a list with no owner, uid, title nor name" do
     list = MailingList.new
     assert_not list.save, "Saved the list with no title nor name"
-    # FIXME
-    # assert list.errors.messages[:owner].include?("can't be blank"),
-    #   "No error messages for the blank owner attribute"
+    assert list.errors.messages[:owner].include?("can't be blank"),
+      "No error messages for the blank owner attribute"
     assert list.errors.messages[:name].include?("can't be blank"),
       "No error message for the blank name attribute"
     assert list.errors.messages[:title].include?("can't be blank"),

@@ -1,0 +1,5 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+etienne_garnier:
+  name: Etienne Garnier
+  email: etienne.garnier@domain.tld
