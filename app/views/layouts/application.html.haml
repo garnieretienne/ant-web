@@ -7,5 +7,20 @@
     = csrf_meta_tags
     %meta{name: "viewport", content: "width=device-width, initial-scale=1"}
   %body
+    %nav.navbar.navbar-inverse.navbar-static-top
+      .container
+        %ul.nav.navbar-nav
+          %li
+            = link_to("Mailing Lists", mailing_lists_path)
     .container
+      - if flash.notice
+        .alert.alert-success.alert-dismissible
+          %button.close{type: "button", "data-dismiss" => "alert", "aria-label" => "Close"}
+            %span{"aria-hidden" => "true"} &times
+          = flash.notice
+      - if flash.alert
+        .alert.alert-danger.alert-dismissible
+          %button.close{type: "button", "data-dismiss" => "alert", "aria-label" => "Close"}
+            %span{"aria-hidden" => "true"} &times
+          = flash.alert
       = yield

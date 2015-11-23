@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
+  root "mailing_lists#index"
 
-  resources :mailing_lists, only: :index do
+  resources :mailing_lists, only: [:index, :create, :destroy] do
     resources :subscribers, only: [:index, :create, :destroy]
   end
 

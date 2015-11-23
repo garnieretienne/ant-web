@@ -1,4 +1,6 @@
 class Subscriber < ActiveRecord::Base
+  default_scope { order('name ASC') }
+
   belongs_to :mailing_list
 
   include EmailConcern

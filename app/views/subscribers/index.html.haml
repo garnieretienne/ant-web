@@ -1,17 +1,10 @@
-- if flash.notice
-  .alert.alert-success.alert-dismissible
-    %button.close{type: "button", "data-dismiss" => "alert", "aria-label" => "Close"}
-      %span{"aria-hidden" => "true"} &times
-    = flash.notice
-- if flash.alert
-  .alert.alert-danger.alert-dismissible
-    %button.close{type: "button", "data-dismiss" => "alert", "aria-label" => "Close"}
-      %span{"aria-hidden" => "true"} &times
-    = flash.alert
+%h1
+  = @mailing_list
+  %span.badge= pluralize(@mailing_list.messages.count, "message")
 
-%h1= "Mailing list: #{@mailing_list}"
-
-%h2= "Subscribers (#{@subscribers.length})"
+%h2
+  Subscribers
+  %span.badge= @subscribers.length
 
 = form_for(@new_subscriber, url: mailing_list_subscribers_path(@mailing_list)) do |f|
   %table.table
@@ -19,13 +12,19 @@
       %th Name
       %th Email
       %th Actions
+    %tr
+      %td
+        .from-group
+          = f.label(:name, class: "sr-only")
+          = f.text_field(:name, class: "form-control", placeholder: "Name")
+      %td
+        .form-group
+          = f.label(:email, class: "sr-only")
+          = f.text_field(:email, class: "form-control", placeholder: "Email")
+      %td= f.submit("Add", class: "btn btn-default")
     - @subscribers.each do |subscriber|
       %tr
         %td= subscriber.name
         %td= subscriber.email
         %td
           = link_to("Remove", mailing_list_subscriber_path(@mailing_list, subscriber), method: :delete, class: "btn btn-danger")
-    %tr
-      %td= f.text_field(:name, class: "form-control", placeholder: "Name")
-      %td= f.text_field(:email, class: "form-control", placeholder: "Email")
-      %td= f.submit("Add", class: "btn btn-default")

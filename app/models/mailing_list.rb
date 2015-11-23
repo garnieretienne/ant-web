@@ -1,6 +1,7 @@
 class MailingList < ActiveRecord::Base
   has_many :subscribers
-  belongs_to :owner, class_name: User
+  has_many :messages
+  belongs_to :owner, class_name: "User"
 
   validates :uid, presence: true, list_id: true, uniqueness: true
   validates :name, presence: true, list_name: true, uniqueness: true

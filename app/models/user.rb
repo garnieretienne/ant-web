@@ -1,5 +1,5 @@
 class User < ActiveRecord::Base
-  has_many :mailing_lists
+  has_many :mailing_lists, foreign_key: :owner_id
 
   include EmailConcern
 
