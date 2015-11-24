@@ -9,9 +9,13 @@
   %body
     %nav.navbar.navbar-inverse.navbar-static-top
       .container
-        %ul.nav.navbar-nav
-          %li
-            = link_to("Mailing Lists", mailing_lists_path)
+        - if current_user
+          %p.navbar-text.navbar-right
+            = "Signed in as #{current_user.name}, "
+            = link_to("Logout", logout_path, class: "navbar-link")
+          %ul.nav.navbar-nav
+            %li
+              = link_to("Mailing Lists", mailing_lists_path)
     .container
       - if flash.notice
         .alert.alert-success.alert-dismissible

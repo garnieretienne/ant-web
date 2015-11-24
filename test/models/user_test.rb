@@ -2,7 +2,7 @@ require 'test_helper'
 
 class UserTest < ActiveSupport::TestCase
 
-  test "should not save an user with no name nor email address" do
+  test "should not save an user with no name, email nor password" do
     user = User.new
     assert_not user.save,
       "Saved an user with no name nor email address"
@@ -10,6 +10,8 @@ class UserTest < ActiveSupport::TestCase
       "No error message for the blank name attribute"
     assert user.errors.messages[:email].include?("can't be blank"),
       "No error message for the blank email address attribute"
+      assert user.errors.messages[:password].include?("can't be blank"),
+        "No error message for the blank password attribute"
   end
 
   test "should not save a new user with an already registered email address" do

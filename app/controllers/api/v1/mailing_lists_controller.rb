@@ -1,5 +1,6 @@
 class Api::V1::MailingListsController < ApplicationController
   protect_from_forgery(with: :null_session)
+  skip_before_action :authorize
 
   def receive_message
     message, mailing_list = parse_incoming_message
