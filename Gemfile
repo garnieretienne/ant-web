@@ -56,5 +56,6 @@ gem "mail"
 gem "bootstrap-sass"
 
 group :production do
+  gem "rails_12factor"
   gem "pg"
 end
