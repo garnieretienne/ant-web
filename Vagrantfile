@@ -25,7 +25,7 @@ git clone https://github.com/ianheggie/rbenv-binstubs.git \
     ~/.rbenv/plugins/rbenv-binstubs
 
 # Install Ruby
-ruby_version="2.2.1"
+ruby_version=$(cat /vagrant/Gemfile | grep -Po '^ruby "\K[^"]+')
 export PATH="$HOME/.rbenv/bin:$PATH"
 eval "$(rbenv init -)"
 rbenv download $ruby_version
