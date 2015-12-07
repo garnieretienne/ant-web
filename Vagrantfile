@@ -32,8 +32,8 @@ rbenv download $ruby_version
 rbenv global $ruby_version
 rbenv rehash
 
-# Install Bundler
-gem install bundler
+# Install Bundler and Foreman
+gem install bundler foreman
 
 # Install Ruby on Rails dependencies
 sudo apt-get --quiet --assume-yes install zlib1g-dev
@@ -48,7 +48,7 @@ EOF
 
 Vagrant.configure(2) do |config|
   config.vm.box = "ubuntu/trusty64"
-  config.vm.network "forwarded_port", guest: 3000, host: 3000
+  config.vm.network "forwarded_port", guest: 5000, host: 5000
   config.vm.provision "shell", inline: $script, privileged: false
   config.vm.network "private_network", type: "dhcp"
   config.vm.synced_folder ".", "/vagrant", type: "nfs"
