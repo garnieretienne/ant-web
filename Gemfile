@@ -56,6 +56,9 @@ gem "mail"
 # Use Twitter Bootstrap
 gem "bootstrap-sass"
 
+# Use simplified logging
+gem "lograge"
+
 group :production do
   gem "rails_12factor"
   gem "pg"
