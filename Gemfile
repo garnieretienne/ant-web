@@ -59,6 +59,9 @@ gem "bootstrap-sass"
 # Use simplified logging
 gem "lograge"
 
+# Use a multithread HTTP server
+gem "puma"
+
 group :production do
   gem "rails_12factor"
   gem "pg"
