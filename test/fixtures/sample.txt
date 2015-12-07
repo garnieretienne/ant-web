@@ -1,0 +1,11 @@
+Date: Mon, 07 Dec 2015 19:32:27 +0000
+From: Etienne Garnier <etienne.garnier@domain.tld>
+To: foo.bar@domain.tld
+Message-ID: <5665decb1fabd_b399f39907738a@vagrant-ubuntu-trusty-64.mail>
+Subject: Testing email
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+This is a test email.

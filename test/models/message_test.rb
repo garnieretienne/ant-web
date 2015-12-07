@@ -16,6 +16,7 @@ class MessageTest < ActiveSupport::TestCase
 
   test "should create new message correctly parsing an email source" do
     source = <<-EOF.strip_heredoc
+      Date: Mon, 07 Dec 2015 19:32:27 +0000
       From: Foo Bar <foo@bar.tld>
       To: Hello World <hello@world.tld>
       Subject: Testing
@@ -28,5 +29,12 @@ class MessageTest < ActiveSupport::TestCase
     EOF
     message = Message.new_from_source(source)
     assert message.valid?, "Message parsed from correct source is not valid"
+  end
+
+  test "should not save a message source if no mandatory headers are present" do
+    message = Message.new_from_source("Coucou")
+    assert_not message.save, "Saved a message not correctly formatted"
+    assert message.errors.messages[:source]
+      .include?("is not a valid email content")
   end
 end
