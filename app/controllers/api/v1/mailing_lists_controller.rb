@@ -4,8 +4,17 @@ class Api::V1::MailingListsController < ApplicationController
   def receive_message
     message, mailing_list = parse_incoming_message
 
-    return render(json: true, status: :bad_request) unless message.valid?
-    return render(json: true, status: :unauthorized) unless message.authorized?
+    unless message.valid?
+      errors = message.errors.full_messages.join(", ")
+      return render(plain: "Unvalid message: #{errors}\n", status: :bad_request)
+    end
+
+    unless message.authorized?
+      return render(
+        plain: "Unauthorized sender: #{message.author}\n",
+        status: :unauthorized
+      )
+    end
 
     message.save
 
@@ -15,9 +24,9 @@ class Api::V1::MailingListsController < ApplicationController
       message: message.source,
       subscribers: mailing_list.subscribers.map { |s| s.email_with_name }
     )
-
     forward_list_message_service.call
-    render(json: true)
+
+    render(plain: "Message accepted")
   end
 
   private
