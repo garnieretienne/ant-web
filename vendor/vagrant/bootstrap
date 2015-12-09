@@ -1,45 +1,45 @@
 #!/bin/bash
 
-# Configure the package manager
-export DEBIAN_FRONTEND=noninteractive
-sudo apt-get --quiet update
+export APPROOT=${1-.}
+export APPUSER=${2-$USER}
+export APPHOME=${3-$HOME}
 
-# Install rbenv dependencies
-sudo apt-get --quiet --assume-yes install git build-essential
+function topic {
+  echo ""
+  echo ">> ${@}"
+}
 
-# Install rbenv
-git clone https://github.com/sstephenson/rbenv.git ~/.rbenv
-echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
-echo 'eval "$(rbenv init -)"' >> ~/.bashrc
+function run {
+  echo "> Run: ${@}"
+  $@
+}
 
-# Install rbenv plugin: rvm-download
-git clone https://github.com/garnieretienne/rvm-download.git \
-    ~/.rbenv/plugins/rvm-download
+topic "Update the apt cache"
+run sudo apt-get update
 
-# Install rbenv plugin: rbenv-gem-rehash
-git clone https://github.com/sstephenson/rbenv-gem-rehash.git \
-    ~/.rbenv/plugins/rbenv-gem-rehash
+topic "Instal ruby and configure rubygem"
+run sudo DEBIAN_FRONTEND=noninteractive \
+    apt-get install --quiet --assume-yes ruby2.0
+run sudo update-alternatives --install /usr/bin/ruby ruby /usr/bin/ruby2.0 1
+run sudo update-alternatives --install /usr/bin/gem gem /usr/bin/gem2.0 1
 
-# Install rbenv plugin: rbenv-binstubs
-git clone https://github.com/ianheggie/rbenv-binstubs.git \
-    ~/.rbenv/plugins/rbenv-binstubs
+topic "Install foreman and bundler gems"
+run sudo gem install --quiet --no-ri --no-rdoc bundler foreman
 
-# Install Ruby
-ruby_version=$(cat /vagrant/Gemfile | grep -Po '^ruby "\K[^"]+')
-export PATH="$HOME/.rbenv/bin:$PATH"
-eval "$(rbenv init -)"
-rbenv download $ruby_version
-rbenv global $ruby_version
-rbenv rehash
+topic "Install system dependencies (Ruby on Rails)"
+run sudo DEBIAN_FRONTEND=noninteractive \
+    apt-get install --quiet --assume-yes zlib1g-dev
 
-# Install Bundler and Foreman
-gem install bundler foreman
+topic "Install system dependencies (Database)"
+run sudo DEBIAN_FRONTEND=noninteractive \
+    apt-get install --quiet --assume-yes libsqlite3-dev
 
-# Install Ruby on Rails dependencies
-sudo apt-get --quiet --assume-yes install zlib1g-dev
+topic "Install system dependencies (Gems)"
+run sudo DEBIAN_FRONTEND=noninteractive \
+    apt-get install --quiet --assume-yes build-essential ruby2.0-dev
 
-# Install App system dependencies
-sudo apt-get install --quiet --assume-yes libsqlite3-dev
+topic "Install gems dependencies"
+cd $APPROOT && run bundle install --path vendor/bundle --binstubs $APPHOME/bin
 
-# Install App gem dependencies
-cd /vagrant && bundle install --path vendor/bundle --binstubs .bundle/bin
+topic "Initialize the database"
+cd $APPROOT && run bin/rake db:schema:load
