@@ -1,5 +1,4 @@
-class Api::V1::MailingListsController < ApplicationController
-  skip_before_action :authorize, :verify_authenticity_token
+class Api::V1::MailingListsController < APIController
 
   def receive_message
     message, mailing_list = parse_incoming_message
