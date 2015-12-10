@@ -9,7 +9,7 @@ end
 
 # Use the SMTP_URL environment variable if exist.
 if ENV["SMTP_URL"]
-  smtp_url = URI::parse(ENV["SMTP_URL"] || "smtp://localhost:25")
+  smtp_url = URI::parse(ENV["SMTP_URL"])
 
   smtp_settings = {
     address: smtp_url.host,
@@ -22,6 +22,6 @@ if ENV["SMTP_URL"]
   if ENV["SMTP_VERIFY_SSL"] == "false"
     smtp_settings[:openssl_verify_mode] = "none"
   end
-  
+
   Mail.defaults { delivery_method :smtp, smtp_settings }
 end

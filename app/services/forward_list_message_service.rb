@@ -61,7 +61,7 @@ class ForwardListMessageService
   # RFC2821 section 3.10.2
   #
   # [...]To expand a list, the recipient mailer replaces the pseudo-mailbox
-  # address in the envelope with all of the expanded[...]
+  # address in the envelope with all of the expanded addresses[...]
   def set_the_envelope_destination_addresses
     @new_message.smtp_envelope_to = @subscribers
   end
