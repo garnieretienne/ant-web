@@ -1,0 +1,118 @@
+#!/bin/bash
+#
+# Script to bootstrap the app on Ubuntu 14.04
+#
+# Usage: bootstrap [APPROOT] [APPUSER] [APPHOME]
+#
+# APPROOT: The root folder where the app source lie
+# APPUSER: User that will be running the app
+# APPHOME: path to the home directory of the user running the app
+#
+# The environment to deploy in can be specified using the ENV environment
+# variable, can be "development" (default) or "production".
+
+readonly ENVIRONMENT=${ENV:-development}
+
+export APPROOT=${1-.}
+export APPUSER=${2-$USER}
+export APPHOME=${3-$HOME}
+
+function topic {
+  echo ""
+  echo ">> ${@}"
+}
+
+function run {
+  echo "> Run: ${@}"
+  "${@}"
+}
+
+function rundev {
+  if [[ $ENVIRONMENT == "development" ]]; then
+    run "${@}"
+  fi
+}
+
+function runprod {
+  if [[ $ENVIRONMENT == "production" ]]; then
+    run "${@}"
+  fi
+}
+
+topic "Bootstrap"
+echo "Environment: ${ENVIRONMENT}"
+echo "App root: ${APPROOT}"
+echo "App user: ${APPUSER}"
+echo "App home: ${APPHOME}"
+
+topic "Write environment file"
+run sudo sh -c "echo RAILS_ENV=${ENVIRONMENT} >> ${APPROOT}/.env"
+
+topic "Update the apt cache"
+run sudo apt-get update
+
+topic "Instal ruby and configure rubygem"
+run sudo DEBIAN_FRONTEND=noninteractive \
+    apt-get install --quiet --assume-yes ruby2.0
+run sudo update-alternatives --install /usr/bin/ruby ruby /usr/bin/ruby2.0 1
+run sudo update-alternatives --install /usr/bin/gem gem /usr/bin/gem2.0 1
+
+topic "Install foreman and bundler gems"
+run sudo gem install --quiet --no-ri --no-rdoc bundler foreman
+
+topic "Install system dependencies (Ruby on Rails)"
+run sudo DEBIAN_FRONTEND=noninteractive \
+    apt-get install --quiet --assume-yes zlib1g-dev
+
+topic "Install system dependencies (Database)"
+rundev sudo DEBIAN_FRONTEND=noninteractive \
+    apt-get install --quiet --assume-yes libsqlite3-dev
+runprod sudo DEBIAN_FRONTEND=noninteractive \
+    apt-get install --quiet --assume-yes postgresql libpq-dev
+runprod sudo pg_createcluster 9.3 main
+runprod sudo service postgresql start
+
+if [[ $ENVIRONMENT == "production" ]]; then
+  topic "Create the database"
+  PSQL_PASSWORD=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
+  DATABASE_URL="postgres://app:${PSQL_PASSWORD}@localhost:5432/app"
+  run sudo --user postgres psql <<- EOSQL
+CREATE USER app WITH PASSWORD '${PSQL_PASSWORD}';
+CREATE DATABASE app;
+GRANT ALL PRIVILEGES ON DATABASE app TO app;
+EOSQL
+  run sudo sh -c "echo DATABASE_URL=${DATABASE_URL} >> ${APPROOT}/.env"
+fi
+
+topic "Install system dependencies (Gems)"
+run sudo DEBIAN_FRONTEND=noninteractive \
+    apt-get install --quiet --assume-yes build-essential ruby2.0-dev
+
+topic "Install gems dependencies"
+cd $APPROOT && rundev sudo --user $APPUSER bundle install \
+    --without production --path vendor/bundle --binstubs $APPHOME/bin
+cd $APPROOT && runprod sudo --user $APPUSER bundle install --deployment \
+    --without development:test --path vendor/bundle --binstubs $APPHOME/bin
+run sudo sh -c \
+    "echo PATH=\\\$PATH:${APPHOME}/bin  >> ${APPHOME}/.profile"
+
+topic "Initialize the database"
+cd $APPROOT && run sudo --user $APPUSER foreman run bin/rake db:schema:load
+
+if [[ $ENVIRONMENT == "production" ]]; then
+  topic "Generate app secret key"
+  SECRET=$(cd $APPROOT && sudo --user $APPUSER foreman run bin/rake secret)
+  run sudo sh -c "echo SECRET_KEY_BASE=${SECRET} >> ${APPROOT}/.env"
+fi
+
+if [[ $ENVIRONMENT == "production" ]]; then
+  topic "Compile the app assets"
+  cd $APPROOT && run sudo --user $APPUSER foreman run bin/rake assets:precompile
+fi
+
+if [[ $ENVIRONMENT == "production" ]]; then
+  topic "Register the app as a service"
+  cd $APPROOT && run sudo foreman export upstart /etc/init --app $APPUSER \
+      --user $APPUSER --port 5000
+  run sudo service ${APPUSER} start
+fi
