@@ -46,6 +46,8 @@ echo "App user: ${APPUSER}"
 echo "App home: ${APPHOME}"
 
 topic "Write environment file"
+run sudo sh -c \
+    "echo PATH=${APPHOME}/bin:/usr/local/bin:/usr/bin:/bin >> ${APPROOT}/.env"
 run sudo sh -c "echo RAILS_ENV=${ENVIRONMENT} >> ${APPROOT}/.env"
 
 topic "Update the apt cache"
@@ -93,8 +95,6 @@ cd $APPROOT && rundev sudo --user $APPUSER bundle install \
     --without production --path vendor/bundle --binstubs $APPHOME/bin
 cd $APPROOT && runprod sudo --user $APPUSER bundle install --deployment \
     --without development:test --path vendor/bundle --binstubs $APPHOME/bin
-run sudo sh -c \
-    "echo PATH=\\\$PATH:${APPHOME}/bin  >> ${APPHOME}/.profile"
 
 topic "Initialize the database"
 cd $APPROOT && run sudo --user $APPUSER foreman run bin/rake db:schema:load
