@@ -1,6 +1,7 @@
 # Implement the NGINX "auth_http" protocol
 #
 # See: http://nginx.org/en/docs/mail/ngx_mail_auth_http_module.html#protocol
+# See: `config/initializers/nginx_http_auth.rb`
 class Api::V1::NginxHttpAuthController < APIController
 
   def auth
@@ -25,8 +26,10 @@ class Api::V1::NginxHttpAuthController < APIController
 
   def auth_succeed
     response.headers["Auth-Status"] = "OK"
-    response.headers["Auth-Server"] = "127.0.0.1"
-    response.headers["Auth-Port"] = "2525"
+    response.headers["Auth-Server"] =
+      Rails.configuration.nginx_http_auth[:server]
+    response.headers["Auth-Port"] =
+      Rails.configuration.nginx_http_auth[:port]
     render plain: ""
   end
 
