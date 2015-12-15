@@ -20,7 +20,7 @@ class MailingList < ActiveRecord::Base
 
   # TODO: define different policies (owners only or every subscribers)
   def authorized_to_post?(email)
-    subscribers.find_by(email: email)
+    subscribers.find_by(email: email) != nil
   end
 
   def subscribe(name, email)
