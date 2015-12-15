@@ -6,15 +6,15 @@ class Api::V1::NginxHttpAuthController < APIController
 
   def auth
     header_validated =
-      request.headers["Auth-SMTP-From"] =~ /MAIL FROM: <.*>/ &&
-      request.headers["Auth-SMTP-To"] =~ /RCPT TO: <.*@.*>/
+      request.headers["Auth-SMTP-From"] =~ /MAIL FROM:\s*<.*>/ &&
+      request.headers["Auth-SMTP-To"] =~ /RCPT TO:\s*<.*@.*>/
 
     unless header_validated
       return render plain: "", status: :unprocessable_entity
     end
 
-    from_addr = request.headers["Auth-SMTP-From"][/MAIL FROM: <(.*)>/, 1]
-    to_name = request.headers["Auth-SMTP-To"][/RCPT TO: <(.*)@.*>/, 1]
+    from_addr = request.headers["Auth-SMTP-From"][/MAIL FROM:\s*<(.*)>/, 1]
+    to_name = request.headers["Auth-SMTP-To"][/RCPT TO:\s*<(.*)@.*>/, 1]
 
     return auth_failed_to unless list = MailingList.find_by(name: to_name)
     return auth_failed_from unless list.authorized_to_post?(from_addr)
