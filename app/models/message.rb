@@ -12,8 +12,11 @@ class Message < ActiveRecord::Base
 
     message.author = parser.from_addrs.any? && parser.from_addrs.first
 
-    to_names = parser.to_addrs.map { |addr| addr.split('@').first }
-    to_names.each do |name|
+    recipients = []
+    recipients += parser.to.map { |addr| addr.split('@').first } if parser.to
+    recipients += parser.cc.map { |addr| addr.split('@').first } if parser.cc
+
+    recipients.each do |name|
       if (current_list = MailingList.find_by(name: name))
         message.mailing_list = current_list
       end
