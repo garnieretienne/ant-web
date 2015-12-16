@@ -25,6 +25,8 @@ class ForwardListMessageService
     set_the_header_sender_field
     set_the_header_list_id_field
 
+    return unless @new_message.smtp_envelope_to.any?
+
     @new_message.deliver
   end
 
@@ -63,7 +65,11 @@ class ForwardListMessageService
   # [...]To expand a list, the recipient mailer replaces the pseudo-mailbox
   # address in the envelope with all of the expanded addresses[...]
   def set_the_envelope_destination_addresses
-    @new_message.smtp_envelope_to = @subscribers
+    recipients = @subscribers
+    recipients -= @new_message.cc if @new_message.cc
+    recipients -= @new_message.to if @new_message.to
+    recipients -= @new_message.from if @new_message.from
+    @new_message.smtp_envelope_to = recipients
   end
 
   # RFC2919 section 3

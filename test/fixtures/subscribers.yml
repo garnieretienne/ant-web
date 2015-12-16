@@ -9,3 +9,8 @@ john_smith:
   name: John Smith
   email: john.smith@domain.tld
   mailing_list: foo
+
+luke_skywalker:
+  name: Luke Skywalker
+  email: luke@domain.tld
+  mailing_list: foo
