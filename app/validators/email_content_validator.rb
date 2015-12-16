@@ -11,6 +11,6 @@ class EmailContentValidator < ActiveModel::EachValidator
   def mandatory_headers_are_present?(value)
     value =~ /^Date:.*$/ &&
     value =~ /^From:.*$/ &&
-    (value =~ /^To:.*$/ || value =~ /^Bcc:.*$/)
+    (value =~ /^To:.*$/ || value =~ /^Cc:.*$/ || value =~ /^Bcc:.*$/)
   end
 end
