@@ -4,7 +4,7 @@
   - @mailing_lists.each do |mailing_list|
     %li.list-group-item
       %span.badge= pluralize(mailing_list.messages.count, "message")
-      = link_to(mailing_list, mailing_list_subscribers_path(mailing_list))
+      = link_to(mailing_list.email_with_name, mailing_list_subscribers_path(mailing_list))
       .btn-group
         = link_to("Delete", mailing_list_path(mailing_list), method: :delete, class: "btn btn-danger btn-xs")
 

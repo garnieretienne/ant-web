@@ -66,4 +66,10 @@ class MailingListTest < ActiveSupport::TestCase
         "The email has not been unsubscribed from the mailing list"
     end
   end
+
+  test "should create the email and email_with_name accessors" do
+    list = MailingList.new(name: "test", title: "Testing List")
+    assert_equal "test@localhost", list.email
+    assert_equal "Testing List <test@localhost>", list.email_with_name
+  end
 end

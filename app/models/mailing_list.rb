@@ -18,6 +18,14 @@ class MailingList < ActiveRecord::Base
     "#{title} <#{uid}>"
   end
 
+  def email
+    "#{name}@#{Rails.configuration.mail_domain}"
+  end
+
+  def email_with_name
+    "#{title} <#{email}>"
+  end
+
   # TODO: define different policies (owners only or every subscribers)
   def authorized_to_post?(email)
     subscribers.find_by(email: email) != nil

@@ -1,5 +1,6 @@
 %h1
   = @mailing_list
+  %small= @mailing_list.email
   %span.badge= pluralize(@mailing_list.messages.count, "message")
 
 %h2
