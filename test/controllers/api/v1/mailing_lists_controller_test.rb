@@ -2,17 +2,20 @@ require 'test_helper'
 
 class Api::V1::MailingListsControllerTest < ActionController::TestCase
 
-  test "should post receive_message" do
+  test "should post a received message" do
     list = MailingList.first
     subscriber = list.subscribers.first
     mail = Mail.new do
-      to "#{list.name}@localhost"
-      from subscriber.email
+      to list.email_with_name
+      from subscriber.email_with_name
       subject "testing"
     end
 
+    @request.env["HTTP_CONTENT_TYPE"] = "text/plain"
+    @request.env["HTTP_MAIL_FROM"] = subscriber.email
+    @request.env["HTTP_RCPT_TO"] = list.email
+
     assert_difference("Mail::TestMailer.deliveries.length", 1) do
-      @request.headers["Content-Type"] = "text/plain"
       post :receive_message, mail.to_s
       assert_response :success
     end
@@ -51,10 +54,14 @@ class Api::V1::MailingListsControllerTest < ActionController::TestCase
 
     mail = Mail.new do
       to subscriber_2.email
-      cc "#{list.name}@localhost"
+      cc list.email
       from subscriber_1.email
       subject "testing"
     end
+
+    @request.env["HTTP_CONTENT_TYPE"] = "text/plain"
+    @request.env["HTTP_MAIL_FROM"] = subscriber_1.email
+    @request.env["HTTP_RCPT_TO"] = list.email
 
     assert_difference("Mail::TestMailer.deliveries.length", 1) do
       @request.headers["Content-Type"] = "text/plain"

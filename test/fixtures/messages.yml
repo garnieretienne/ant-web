@@ -3,9 +3,9 @@
 one:
   author: MyString
   source: MyText
-  mailing_list: foo
+  mailbox: foo
 
 two:
   author: MyString
   source: MyText
-  mailing_list: foo
+  mailbox: foo

@@ -3,7 +3,6 @@
 %ul.list-group
   - @mailing_lists.each do |mailing_list|
     %li.list-group-item
-      %span.badge= pluralize(mailing_list.messages.count, "message")
       = link_to(mailing_list.email_with_name, mailing_list_subscribers_path(mailing_list))
       .btn-group
         = link_to("Delete", mailing_list_path(mailing_list), method: :delete, class: "btn btn-danger btn-xs")
@@ -15,12 +14,14 @@
   .panel-body
     = form_for(@new_mailing_list, url: mailing_lists_path, html: {class: "form-inline"}) do |f|
       .form-group
-        = f.label(:title)
-        = f.text_field(:title, class: "form-control", placeholder: "Title")
-      .form-group
         = f.label(:name)
-        = f.text_field(:name, class: "form-control", placeholder: "name")
+        = f.text_field(:name, class: "form-control", placeholder: "Name")
+      .form-group
+        = f.label(:mailbox_name)
+        = f.text_field(:mailbox_name, class: "form-control", placeholder: "mailbox-name")
       = f.submit("Create", class: "btn btn-default")
   .panel-footer
-    %p.text-info <strong>The Title</strong> is the descriptive title of the mailing list, e.g. <em>New york City Mailing List</em>.
-    %p.text-info <strong>The Name</strong> is the lowercase name used in the mailing address, e.g. <em>new_york_city will be new_york_city@domain.tld</em>.
+    %p.text-info <strong>The Name</strong> is the descriptive name of the mailing list, e.g. <em>New York City Mailing List</em>.
+    %p.text-info
+      <strong>The Mailbox Name</strong> is the lowercase name used in the mailing address, e.g.
+      %em= "new_york_city will be new_york_city@#{Rails.application.config.mail_domain }"

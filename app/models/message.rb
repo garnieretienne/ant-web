@@ -1,31 +1,23 @@
 class Message < ActiveRecord::Base
-  belongs_to :mailing_list
+  belongs_to :mailbox
+
+  attr_accessor :mailbox_address
 
   validates :author, presence: true
   validates :source, presence: true, email_content: true
-  validates :mailing_list, presence: true
+  validates :mailbox, presence: true
 
-  # TODO: Message can be sent to multiple lists.
-  def self.new_from_source(message_string)
-    message = new(source: message_string)
-    parser = Mail.read_from_string(message.source)
-
-    message.author = parser.from_addrs.any? && parser.from_addrs.first
-
-    recipients = []
-    recipients += parser.to.map { |addr| addr.split('@').first } if parser.to
-    recipients += parser.cc.map { |addr| addr.split('@').first } if parser.cc
-
-    recipients.each do |name|
-      if (current_list = MailingList.find_by(name: name))
-        message.mailing_list = current_list
-      end
-    end
-
-    message
-  end
+  before_validation :find_mailbox
 
   def authorized?
-    mailing_list.authorized_to_post?(author)
+    mailbox.authorized_to_post?(author)
+  end
+
+  private
+
+  def find_mailbox
+    return unless mailbox_address
+
+    self.mailbox ||= Mailbox.find_by_address(mailbox_address)
   end
 end

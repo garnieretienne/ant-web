@@ -3,3 +3,4 @@
 etienne_garnier:
   name: Etienne Garnier
   email: etienne.garnier@domain.tld
+  password_digest:  <%= BCrypt::Password.create("password") %>

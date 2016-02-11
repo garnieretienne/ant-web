@@ -1,11 +1,11 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 foo:
-  name: foo
-  title: Foo Bar
+  name: Foo Bar
   owner: etienne_garnier
+  mailbox: foo
 
 hello:
-  name: hello
-  title: Hello World
+  name: Hello World
   owner: etienne_garnier
+  mailbox: hello

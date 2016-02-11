@@ -6,12 +6,12 @@ class MailingListsController < ApplicationController
   end
 
   def create
-    mailing_list = current_user.mailing_lists.new(mailing_list_params)
+    @mailing_list = current_user.mailing_lists.new(mailing_list_params)
 
-    if mailing_list.save
+    if @mailing_list.save
       flash.notice = "Mailing list created"
     else
-      errors_text = mailing_list.errors.full_messages.join(", ")
+      errors_text = @mailing_list.errors.full_messages.join(", ")
       flash.alert = "Cannot create the mailing list: #{errors_text}"
     end
 
@@ -27,6 +27,6 @@ class MailingListsController < ApplicationController
   private
 
   def mailing_list_params
-    params.require(:mailing_list).permit(:name, :title)
+    params.require(:mailing_list).permit(:name, :mailbox_name)
   end
 end
